@@ -8,19 +8,20 @@ namespace Domain.Entities
         {
             
         }
-        public Pagamento(Guid numeroPagamento, string qrCode, long pedidoId)
+        public Pagamento(Guid numeroPagamento, string qrCode, long pedidoId, decimal valorTotal)
         {                       
             PedidoId = pedidoId;   
             NumeroPagamento = numeroPagamento;
             QRCode = qrCode;
             Status = PagamentoStatusEnum.Pendente;
+            ValorTotal = valorTotal;
         }
         public long Id { get; private set; }
         public Guid NumeroPagamento { get; private set; }
         public string QRCode { get; private set; }
         public PagamentoStatusEnum Status { get; private set; }
         public long PedidoId { get; private set; }
-
+        public decimal ValorTotal { get; set; }
         public bool PagamentoAprovado() => Status == PagamentoStatusEnum.Pago;
         public void AtualizarStatus(bool aprovado)
         {

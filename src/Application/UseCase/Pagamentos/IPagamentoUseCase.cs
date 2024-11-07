@@ -5,7 +5,7 @@ namespace Application.UseCase.Pagamentos
 {
     public interface IPagamentoUseCase
     {
-        Task<Pagamento> GerarPagamento(long pedidoId);
+        Task<Pagamento> GerarPagamento(GerarPagamentoDto pagamento);
         Task<Pagamento> AtualizarPagamento(AtualizarPagamentoDto pagamento);
     }
 }

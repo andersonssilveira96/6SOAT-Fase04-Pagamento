@@ -25,17 +25,17 @@ namespace Application.UseCase.Pagamentos
 
             await _pagamentoRepository.Atualizar(pagamento);
           
-            //var pedido = pagamento.Pedido;
-            //pedido.AtualizarStatus(pagamento.PagamentoAprovado() ? StatusEnum.EmPreparacao : StatusEnum.Cancelado);
-
-            //await _pedidoRepository.Atualizar(pedido);
+            // Se comunicar com API de Pedido
+            // var pedido = pagamento.Pedido;
+            // pedido.AtualizarStatus(pagamento.PagamentoAprovado() ? StatusEnum.EmPreparacao : StatusEnum.Cancelado);
+            // await _pedidoRepository.Atualizar(pedido);
 
             return pagamento;
         }
 
-        public async Task<Pagamento> GerarPagamento(long pedidoId)
+        public async Task<Pagamento> GerarPagamento(GerarPagamentoDto pagamentoDto)
         {
-            var pagamento = await _gatewayService.EnviarPagamento(pedidoId);
+            var pagamento = await _gatewayService.EnviarPagamento(pagamentoDto.PedidoId, pagamentoDto.ValorTotal);
 
             await _pagamentoRepository.Inserir(pagamento);
 

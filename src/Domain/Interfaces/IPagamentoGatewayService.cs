@@ -4,6 +4,6 @@ namespace Domain.Interfaces
 {
     public interface IPagamentoGatewayService
     {
-        Task<Pagamento> EnviarPagamento(long pedidoId);
+        Task<Pagamento> EnviarPagamento(long pedidoId, decimal valorTotal);
     }
 }

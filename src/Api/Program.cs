@@ -2,6 +2,7 @@ using Api.Extensions;
 using Api.Helper;
 using Application;
 using Infra.Data;
+using Infra.Gateway;
 using Infra.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -42,6 +43,7 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddApplicationService();
 builder.Services.AddInfraDataServices();
+builder.Services.AddInfraGatewayServices();
 
 builder.Services.AddDbContext<TechChallengeContext>(
     options => options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));

@@ -7,7 +7,7 @@ namespace Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    // [Authorize]
 
     public class PagamentoController : ControllerBase
     {
@@ -18,8 +18,21 @@ namespace Api.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> Inserir(GerarPagamentoDto pagamentoDto)
+        {
+            try
+            {
+                return Ok(await _pagamentoUseCase.GerarPagamento(pagamentoDto));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Mensagem = ex.Message });
+            }
+        }
+
+        [HttpPost]
         [Route("webhook")]
-        public async Task<IActionResult> Inserir(AtualizarPagamentoDto pagamentoDto)
+        public async Task<IActionResult> Atualizar(AtualizarPagamentoDto pagamentoDto)
         {
             try
             {
