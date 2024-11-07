@@ -1,4 +1,6 @@
 ﻿using Domain.Enums;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Domain.Entities
 {
@@ -17,7 +19,7 @@ namespace Domain.Entities
             ValorTotal = valorTotal;
         }
         public long Id { get; private set; }
-        public Guid NumeroPagamento { get; private set; }
+        [BsonGuidRepresentation(GuidRepresentation.Standard)] public Guid NumeroPagamento { get; private set; }
         public string QRCode { get; private set; }
         public PagamentoStatusEnum Status { get; private set; }
         public long PedidoId { get; private set; }

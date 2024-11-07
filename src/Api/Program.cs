@@ -3,9 +3,8 @@ using Api.Helper;
 using Application;
 using Infra.Data;
 using Infra.Gateway;
-using Infra.Data.Context;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +13,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "TechChallenge API", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "TechChallenge Pagamento API", Version = "v1" });
 
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
     {
@@ -41,25 +40,20 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+builder.Services.AddSingleton<IMongoClient, MongoClient>(sp => new MongoClient(builder.Configuration.GetConnectionString("MongoDb")));
+builder.Services.Configure<AuthenticationCognitoOptions>(builder.Configuration.GetSection("CognitoConfig"));
+
 builder.Services.AddApplicationService();
 builder.Services.AddInfraDataServices();
 builder.Services.AddInfraGatewayServices();
 
-builder.Services.AddDbContext<TechChallengeContext>(
-    options => options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
-
-builder.Services.Configure<AuthenticationCognitoOptions>(builder.Configuration.GetSection("CognitoConfig"));
 builder.Services.AddAuthenticationConfig();
-
-AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 var app = builder.Build();
 
 app.UseSwagger();
 
 app.UseSwaggerUI();
-
-app.ApplyMigrations();
 
 app.UseHttpsRedirection();
 

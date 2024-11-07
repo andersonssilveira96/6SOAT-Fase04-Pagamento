@@ -1,16 +1,20 @@
 ﻿using Domain.Entities;
 using Domain.Repositories;
-using Infra.Data.Context;
-using Microsoft.EntityFrameworkCore;
+using MongoDB.Bson;
+using MongoDB.Driver;
+using System.Xml.Linq;
 
 namespace Infra.Data.Repositories
 {
     public class PagamentoRepository : IPagamentoRepository
     {
-        private readonly TechChallengeContext _context;
-        public PagamentoRepository(TechChallengeContext context)
+        private readonly IMongoCollection<Pagamento> _pagamentoCollection;
+        public PagamentoRepository(IMongoClient client)
         {
-            _context = context;
+            var database = client.GetDatabase("TechChallengeDb");
+            var collection = database.GetCollection<Pagamento>(nameof(Pagamento));
+
+            _pagamentoCollection = collection;
         }
         public async Task<Pagamento> Inserir(Pagamento pagamento)
         {
@@ -19,24 +23,32 @@ namespace Infra.Data.Repositories
                 throw new ArgumentNullException(nameof(pagamento));
             }
 
-            _context.Pagamento.Add(pagamento);
-
-            await _context.SaveChangesAsync();
+            await _pagamentoCollection.InsertOneAsync(pagamento);
 
             return pagamento;
         }
         public virtual async Task<Pagamento> Atualizar(Pagamento pagamento)
         {
-            var entry = _context.Entry(pagamento);
+            var filter = Builders<Pagamento>.Filter.Eq(c => c.Id, pagamento.Id);
+            var update = Builders<Pagamento>.Update
+                .Set(c => c.ValorTotal, pagamento.ValorTotal)
+                .Set(c => c.Status, pagamento.Status)
+                .Set(c => c.QRCode, pagamento.QRCode);
 
-            _context.Pagamento.Update(entry.Entity);
-
-            await _context.SaveChangesAsync();
+            var result = await _pagamentoCollection.UpdateOneAsync(filter, update);
 
             return pagamento;
         }
-        public async Task<Pagamento> ObterPorPedidoId(long id) => await _context.Pagamento.FirstOrDefaultAsync(x => x.PedidoId == id);
-        public async Task<Pagamento> ObterPorGUID(Guid numeroPagamento) => await _context.Pagamento.FirstOrDefaultAsync(x => x.NumeroPagamento == numeroPagamento);
+        public async Task<Pagamento> ObterPorPedidoId(long id)
+        {
+            var filter = Builders<Pagamento>.Filter.Eq(c => c.Id, id);
+            return await _pagamentoCollection.Find(filter).FirstOrDefaultAsync();
+        }
+        public async Task<Pagamento> ObterPorGUID(Guid numeroPagamento)
+        {
+            var filter = Builders<Pagamento>.Filter.Eq(c => c.NumeroPagamento, numeroPagamento);
+            return await _pagamentoCollection.Find(filter).FirstOrDefaultAsync();           
+        }
     }
 }
 
