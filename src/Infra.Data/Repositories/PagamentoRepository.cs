@@ -35,8 +35,8 @@ namespace Infra.Data.Repositories
 
             return pagamento;
         }
-        public async Task<Pagamento> ObterPorPedidoId(long id) => await _context.Pagamento.Include(x => x.Pedido).FirstOrDefaultAsync(x => x.PedidoId == id);
-        public async Task<Pagamento> ObterPorGUID(Guid numeroPagamento) => await _context.Pagamento.Include(x => x.Pedido).FirstOrDefaultAsync(x => x.NumeroPagamento == numeroPagamento);
+        public async Task<Pagamento> ObterPorPedidoId(long id) => await _context.Pagamento.FirstOrDefaultAsync(x => x.PedidoId == id);
+        public async Task<Pagamento> ObterPorGUID(Guid numeroPagamento) => await _context.Pagamento.FirstOrDefaultAsync(x => x.NumeroPagamento == numeroPagamento);
     }
 }
 
