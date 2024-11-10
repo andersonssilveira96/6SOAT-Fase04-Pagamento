@@ -16,20 +16,7 @@ namespace Api.Controllers
         {
             _pagamentoUseCase = pagamentoUseCase;
         }
-
-        [HttpPost]
-        public async Task<IActionResult> Inserir(GerarPagamentoDto pagamentoDto)
-        {
-            try
-            {
-                return Ok(await _pagamentoUseCase.GerarPagamento(pagamentoDto));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { Mensagem = ex.Message });
-            }
-        }
-
+        
         [HttpPost]
         [Route("webhook")]
         public async Task<IActionResult> Atualizar(AtualizarPagamentoDto pagamentoDto)

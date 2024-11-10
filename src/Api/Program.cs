@@ -1,8 +1,10 @@
 using Api.Extensions;
 using Api.Helper;
 using Application;
+using Domain.Consumer;
 using Infra.Data;
 using Infra.Gateway;
+using Infra.MessageBroker;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
 
@@ -46,10 +48,17 @@ builder.Services.Configure<AuthenticationCognitoOptions>(builder.Configuration.G
 builder.Services.AddApplicationService();
 builder.Services.AddInfraDataServices();
 builder.Services.AddInfraGatewayServices();
+builder.Services.AddInfraMessageBrokerServices();
 
 builder.Services.AddAuthenticationConfig();
 
 var app = builder.Build();
+
+// Invocar o serviço
+using var scope = app.Services.CreateScope();
+var messageConsumer = scope.ServiceProvider.GetRequiredService<IMessageBrokerConsumer>();
+_ = Task.Run(() => messageConsumer.ReceiveMessageAsync());
+
 
 app.UseSwagger();
 

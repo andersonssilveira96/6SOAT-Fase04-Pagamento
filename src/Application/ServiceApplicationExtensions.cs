@@ -10,7 +10,7 @@ namespace Application
         public static IServiceCollection AddApplicationService(this IServiceCollection services)
         {
            
-            services.AddScoped<IPagamentoUseCase, PagamentoUseCase>();
+            services.AddSingleton<IPagamentoUseCase, PagamentoUseCase>();
 
             var config = new MapperConfiguration(cfg =>
             {

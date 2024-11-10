@@ -7,7 +7,7 @@ namespace Infra.Gateway
     {
         public static IServiceCollection AddInfraGatewayServices(this IServiceCollection services)
         {
-            services.AddScoped<IPagamentoGatewayService, PagamentoGatewayService>();
+            services.AddSingleton<IPagamentoGatewayService, PagamentoGatewayService>();
             return services;
         }
     }

@@ -8,7 +8,7 @@ namespace Infra.Data
     {
         public static IServiceCollection AddInfraDataServices(this IServiceCollection services)
         {
-            services.AddScoped<IPagamentoRepository, PagamentoRepository>();
+            services.AddSingleton<IPagamentoRepository, PagamentoRepository>();
             return services;
         }
     }

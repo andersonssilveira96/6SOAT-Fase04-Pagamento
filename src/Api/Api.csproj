@@ -21,6 +21,7 @@
     <ProjectReference Include="..\Application\Application.csproj" />
     <ProjectReference Include="..\Infra.Data\Infra.Data.csproj" />
     <ProjectReference Include="..\Infra.Gateway\Infra.Gateway.csproj" />
+    <ProjectReference Include="..\Infra.MessageBroker\Infra.MessageBroker.csproj" />
   </ItemGroup>
 
 </Project>
