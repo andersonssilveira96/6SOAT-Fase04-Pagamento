@@ -1,6 +1,7 @@
 ﻿using Application.DTOs.Pagamentos;
 using Domain.Entities;
 using Domain.Interfaces;
+using Domain.Producer;
 using Domain.Repositories;
 
 namespace Application.UseCase.Pagamentos
@@ -9,10 +10,12 @@ namespace Application.UseCase.Pagamentos
     {
         private readonly IPagamentoGatewayService _gatewayService;
         private readonly IPagamentoRepository _pagamentoRepository;
-        public PagamentoUseCase(IPagamentoGatewayService gatewayService, IPagamentoRepository pagamentoRepository)
+        private readonly IMessageBrokerProducer _messageBrokerProducer;
+        public PagamentoUseCase(IPagamentoGatewayService gatewayService, IPagamentoRepository pagamentoRepository, IMessageBrokerProducer messageBrokerProducer)
         {
             _gatewayService = gatewayService;
             _pagamentoRepository = pagamentoRepository;
+            _messageBrokerProducer = messageBrokerProducer;
         }
 
         public async Task<Pagamento> AtualizarPagamento(AtualizarPagamentoDto atualizarPagamentoDto)
@@ -24,11 +27,8 @@ namespace Application.UseCase.Pagamentos
             pagamento.AtualizarStatus(atualizarPagamentoDto.Aprovado);
 
             await _pagamentoRepository.Atualizar(pagamento);
-          
-            // Se comunicar com API de Pedido
-            // var pedido = pagamento.Pedido;
-            // pedido.AtualizarStatus(pagamento.PagamentoAprovado() ? StatusEnum.EmPreparacao : StatusEnum.Cancelado);
-            // await _pedidoRepository.Atualizar(pedido);
+
+            await _messageBrokerProducer.SendMessageAsync(atualizarPagamentoDto.Aprovado ? "pedidos-pagos" : "pedidos-atualizados", new { Id = pagamento.PedidoId });
 
             return pagamento;
         }

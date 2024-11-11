@@ -1,6 +1,7 @@
 ﻿using Domain.Enums;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using System.Security.Cryptography;
 
 namespace Domain.Entities
 {
@@ -34,6 +35,6 @@ namespace Domain.Entities
         }
         private void Pagar() => Status = PagamentoStatusEnum.Pago;
         private void Rejeitar() => Status = PagamentoStatusEnum.Rejeitado;
-
+        public void IncrementarId(long id) => Id = id;
     }
 }

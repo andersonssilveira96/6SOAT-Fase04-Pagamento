@@ -1,10 +1,13 @@
 ﻿using Application.DTOs.Pagamentos;
+using Application.DTOs.Pedido;
 using Application.UseCase.Pagamentos;
 using Domain.Consumer;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Data.Common;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Channels;
 
 namespace Infra.MessageBroker
@@ -30,17 +33,20 @@ namespace Infra.MessageBroker
             _connection = await factory.CreateConnectionAsync();
             _channel = await _connection.CreateChannelAsync();
 
-            await _channel.QueueDeclareAsync("novos-pedidos", exclusive: false);
+            await _channel.QueueDeclareAsync("pedidos-novos", exclusive: false);
 
             var consumer = new AsyncEventingBasicConsumer(_channel);
             consumer.ReceivedAsync += async (model, eventArgs) => {
                 var body = eventArgs.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
+
                 Console.WriteLine($"Order message received: {message}");
-                await _pagamentoUseCase.GerarPagamento(new GerarPagamentoDto());
+
+                var pedido = JsonSerializer.Deserialize<PedidoDto>(message)!;
+                await _pagamentoUseCase.GerarPagamento(new GerarPagamentoDto() { PedidoId = pedido.Id, ValorTotal = pedido.ValorTotal });
             };
 
-            await _channel.BasicConsumeAsync(queue: "novos-pedidos", autoAck: true, consumer: consumer);
+            await _channel.BasicConsumeAsync(queue: "pedidos-novos", autoAck: true, consumer: consumer);
         }
 
         public void Dispose()

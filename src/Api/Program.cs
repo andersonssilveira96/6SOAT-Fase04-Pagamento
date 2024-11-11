@@ -59,7 +59,6 @@ using var scope = app.Services.CreateScope();
 var messageConsumer = scope.ServiceProvider.GetRequiredService<IMessageBrokerConsumer>();
 _ = Task.Run(() => messageConsumer.ReceiveMessageAsync());
 
-
 app.UseSwagger();
 
 app.UseSwaggerUI();

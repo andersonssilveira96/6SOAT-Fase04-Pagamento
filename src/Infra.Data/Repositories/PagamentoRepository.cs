@@ -23,7 +23,9 @@ namespace Infra.Data.Repositories
                 throw new ArgumentNullException(nameof(pagamento));
             }
 
-            await _pagamentoCollection.InsertOneAsync(pagamento);
+            pagamento.IncrementarId(_pagamentoCollection.CountDocuments(FilterDefinition<Pagamento>.Empty)! + 1);
+           
+            await _pagamentoCollection.InsertOneAsync(pagamento);          
 
             return pagamento;
         }
@@ -41,7 +43,7 @@ namespace Infra.Data.Repositories
         }
         public async Task<Pagamento> ObterPorPedidoId(long id)
         {
-            var filter = Builders<Pagamento>.Filter.Eq(c => c.Id, id);
+            var filter = Builders<Pagamento>.Filter.Eq(c => c.PedidoId, id);            
             return await _pagamentoCollection.Find(filter).FirstOrDefaultAsync();
         }
         public async Task<Pagamento> ObterPorGUID(Guid numeroPagamento)

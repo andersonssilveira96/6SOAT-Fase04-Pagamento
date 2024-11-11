@@ -1,4 +1,5 @@
 ﻿using Domain.Consumer;
+using Domain.Producer;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Infra.MessageBroker
@@ -8,6 +9,7 @@ namespace Infra.MessageBroker
         public static IServiceCollection AddInfraMessageBrokerServices(this IServiceCollection services)
         {
             services.AddSingleton<IMessageBrokerConsumer, MessageBrokerConsumer>();
+            services.AddSingleton<IMessageBrokerProducer, MessageBrokerProducer>();
             return services;
         }
     }
