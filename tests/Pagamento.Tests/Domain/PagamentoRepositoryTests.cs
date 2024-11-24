@@ -83,6 +83,33 @@ namespace Pagamento.Tests
         }
 
         [Fact]
+        public async Task Atualizar_DeveRejeitarPagamentoNaColecao()
+        {
+            // Arrange
+            var pagamento = new Domain.Entities.Pagamento(Guid.NewGuid(), string.Empty, 1, 200.00M);
+            pagamento.AtualizarStatus(false);
+
+            _mockPagamentoCollection
+                .Setup(c => c.UpdateOneAsync(
+                    It.IsAny<FilterDefinition<Domain.Entities.Pagamento>>(),
+                    It.IsAny<UpdateDefinition<Domain.Entities.Pagamento>>(),
+                    null,
+                    default))
+                .ReturnsAsync(new UpdateResult.Acknowledged(1, 1, null));
+
+            // Act
+            var resultado = await _repository.Atualizar(pagamento);
+
+            // Assert
+            Assert.Equal("Rejeitado", resultado.Status.ToString());
+            _mockPagamentoCollection.Verify(c => c.UpdateOneAsync(
+                It.IsAny<FilterDefinition<Domain.Entities.Pagamento>>(),
+                It.IsAny<UpdateDefinition<Domain.Entities.Pagamento>>(),
+                null,
+                default), Times.Once);
+        }
+
+        [Fact]
         public async Task ObterPorPedidoId_DeveRetornarPagamentoCorreto()
         {
             // Arrange

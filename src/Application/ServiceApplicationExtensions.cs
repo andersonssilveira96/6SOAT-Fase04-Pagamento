@@ -2,9 +2,11 @@
 using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Application
 {
+    [ExcludeFromCodeCoverage]
     public static class ServiceApplicationExtensions
     {
         public static IServiceCollection AddApplicationService(this IServiceCollection services)
