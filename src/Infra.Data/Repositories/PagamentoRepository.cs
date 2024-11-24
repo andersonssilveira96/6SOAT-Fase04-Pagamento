@@ -43,13 +43,15 @@ namespace Infra.Data.Repositories
         }
         public async Task<Pagamento> ObterPorPedidoId(long id)
         {
-            var filter = Builders<Pagamento>.Filter.Eq(c => c.PedidoId, id);            
-            return await _pagamentoCollection.Find(filter).FirstOrDefaultAsync();
+            var filter = Builders<Pagamento>.Filter.Eq(c => c.PedidoId, id);
+            using var cursor = await _pagamentoCollection.FindAsync(filter);
+            return await cursor.FirstOrDefaultAsync();
         }
         public async Task<Pagamento> ObterPorGUID(Guid numeroPagamento)
         {
             var filter = Builders<Pagamento>.Filter.Eq(c => c.NumeroPagamento, numeroPagamento);
-            return await _pagamentoCollection.Find(filter).FirstOrDefaultAsync();           
+            using var cursor = await _pagamentoCollection.FindAsync(filter);
+            return await cursor.FirstOrDefaultAsync();
         }
     }
 }
