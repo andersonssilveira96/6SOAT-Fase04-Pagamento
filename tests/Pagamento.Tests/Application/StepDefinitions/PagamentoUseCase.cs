@@ -1,4 +1,4 @@
-using Application.DTOs.Pagamentos;
+ï»¿using Application.DTOs.Pagamentos;
 using Application.UseCase.Pagamentos;
 using Domain.Entities;
 using Domain.Enums;
@@ -28,7 +28,9 @@ public class PagamentoUseCaseSteps
         );
     }
 
-    [Given(@"existe um pagamento com o número de pedido ""(.*)""")]
+    [Given(@"existe um pagamento com o nÃºmero de pedido ""(.*)""")]
+    [Given(@"existe um pagamento com o nï¿½mero de pedido ""(.*)""")]
+
     public void DadoExisteUmPagamentoComONumeroDePedido(long numeroPedido)
     {
         var pagamento = new Domain.Entities.Pagamento(Guid.NewGuid(), string.Empty, numeroPedido, 10);
@@ -37,7 +39,9 @@ public class PagamentoUseCaseSteps
             .ReturnsAsync(pagamento);
     }
 
-    [Given(@"não existe um pagamento com o número de pedido ""(.*)""")]
+    [Given(@"nÃ£o existe um pagamento com o nÃºmero de pedido ""(.*)""")]
+    [Given(@"nÃ£o existe um pagamento com o nï¿½mero de pedido ""(.*)""")]
+
     public void DadoNaoExisteUmPagamentoComONumeroDePedido(long numeroPedido)
     {
         _pagamentoRepositoryMock
@@ -45,7 +49,9 @@ public class PagamentoUseCaseSteps
             .ReturnsAsync((Domain.Entities.Pagamento)null);
     }
 
-    [Given(@"o serviço de gateway retorna um pagamento para o pedido ""(.*)"" com valor ""(.*)""")]
+    [Given(@"o serviÃ§o de gateway retorna um pagamento para o pedido ""(.*)"" com valor ""(.*)""")]
+    [Given(@"o serviï¿½o de gateway retorna um pagamento para o pedido ""(.*)"" com valor ""(.*)""")]
+
     public void DadoOServicoDeGatewayRetornaUmPagamentoParaOPedidoComValor(long pedidoId, decimal valor)
     {
         var pagamento = new Domain.Entities.Pagamento(Guid.NewGuid(), string.Empty, pedidoId, valor);
@@ -108,20 +114,22 @@ public class PagamentoUseCaseSteps
         _pagamentoRepositoryMock.Verify(repo => repo.Atualizar(It.Is<Domain.Entities.Pagamento>(p => p.Status == Enum.Parse<PagamentoStatusEnum>(status))), Times.Once);
     }
 
-    [Then(@"uma mensagem deve ser enviada para o tópico ""(.*)""")]
+    [Then(@"uma mensagem deve ser enviada para o tÃ³pico ""(.*)""")]
+    [Then(@"uma mensagem deve ser enviada para o tï¿½pico ""(.*)""")]
     public void EntaoUmaMensagemDeveSerEnviadaParaOTopico(string topico)
     {
         _messageBrokerProducerMock.Verify(producer => producer.SendMessageAsync(topico, It.IsAny<object>()), Times.Once);
     }
 
-    [Then(@"deve ser lançada uma exceção com a mensagem ""(.*)""")]
+    [Then(@"deve ser lanÃ§ada uma exceÃ§Ã£o com a mensagem ""(.*)""")]
+    [Then(@"deve ser lanÃ§ada uma exceï¿½ï¿½o com a mensagem ""(.*)""")]
     public void EntaoDeveSerLancadaUmaExcecaoComAMensagem(string mensagem)
     {
         Assert.NotNull(_excecao);
         Assert.Equal(mensagem, _excecao.Message);
     }
 
-    [Then(@"o pagamento deve ser salvo no repositório")]
+    [Then(@"o pagamento deve ser salvo no repositÃ³rio")]
     public void EntaoOPagamentoDeveSerSalvoNoRepositorio()
     {
         _pagamentoRepositoryMock.Verify(repo => repo.Inserir(It.IsAny<Domain.Entities.Pagamento>()), Times.Once);
