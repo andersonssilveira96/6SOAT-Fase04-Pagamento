@@ -12,7 +12,7 @@ namespace Infra.MessageBroker
         {
             var factory = new ConnectionFactory
             {
-                HostName = "localhost"
+                HostName = "rabbitmq-service"
             };
 
             var connection = await factory.CreateConnectionAsync();
