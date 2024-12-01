@@ -1,11 +1,10 @@
 name: build & deploy
 on:
-  push:
+ pull_request:
+    types:
+      - closed
     branches:
-      - master
-  pull_request:
-    branches:
-      - master
+      - master 
 
 jobs:
   build:
